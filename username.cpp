@@ -2,7 +2,7 @@
 
 void username::get( uint64_t player_state, wchar_t* player_name )
 {
-      function_ptr = *(uintptr_t*)(driver::base_addr + 0x8F52B5E);
+      function_ptr = *(uintptr_t*)(driver::base_addr + 0x8F52B5E); // its better to cache this
 
       uint32_t  key = *(uint32_t*)(player_state + 0x58);
       uint8_t   tmp = *(uint8_t*)(key);
@@ -10,7 +10,7 @@ void username::get( uint64_t player_state, wchar_t* player_name )
       key *= tmp;
       a1 = (uint16_t)(key ^ 16);
       function_ptr ^= a1;
-      uint16_t tmp_key = *(uint32_t*)(driver::base_addr + 0x8F52B6C);
+      uint16_t tmp_key = *(uint32_t*)(driver::base_addr + 0x8F52B6C); // its better to cache this
       tmp_key ^= 5;
       function_ptr *= (uint8_t)(tmp_key ^ 32);
 
