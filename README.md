@@ -1,2 +1,4 @@
 # fn-username
-I decided to leak this because many kids beg for it.
+
+### this will get updated each update
+- working on latest season :happy:
