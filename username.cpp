@@ -1,27 +1,32 @@
 #include "username.hpp"
 
-void username::get( uint64_t player_state, wchar_t* player_name )
+static void decrypt_name(uint64_t player_state, wchar_t* string)
 {
-      function_ptr = *(uintptr_t*)(driver::base_addr + 0x8F52B5E); // its better to cache this
+	unsigned __int64 a1, a2, a3, a4;
+	a1 = read<unsigned __int64>(base_addr + 0x263A2FD);
+	a2 = read<unsigned __int64>(base_addr + 0x263A303);
+	a3 = read<unsigned __int64>(base_addr + 0x263A30A);
+	a4 = read<unsigned __int64>(base_addr + 0x263A31E);
 
-      uint32_t  key = *(uint32_t*)(player_state + 0x58);
-      uint8_t   tmp = *(uint8_t*)(key);
-      uint16_t  a1;
-      key *= tmp;
-      a1 = (uint16_t)(key ^ 16);
-      function_ptr ^= a1;
-      uint16_t tmp_key = *(uint32_t*)(driver::base_addr + 0x8F52B6C); // its better to cache this
-      tmp_key ^= 5;
-      function_ptr *= (uint8_t)(tmp_key ^ 32);
+	unsigned __int16 a5, a6;
+	a5 = read<unsigned __int16>(player_state + 0x1337);
+	a6 = read<unsigned __int16>(base_addr + 0x263A34F);
 
-      uint64_t fstring = *(uint64_t*)(function_ptr);
-      uint32_t fstring_size = *(uint32_t*)(function_ptr + 8);
+	unsigned __int64 v1, v2;
+	v1 = a1 + ~a5;
+	a2 ^= a6;
+	a2 *= a3 << 6;
+	--a6;
+	a4 += ~a5;
+	v2 = ~a4;
+	v2 ^= a6 - (a2 << 8);
 
-      wchar_t* name = new wchar_t[fstring_size + 1];
-      memcpy(name, &fstring, fstring_size);
+	unsigned __int64 b1;
+	b1 = read<unsigned __int64*>(v2 + 0x1337);//APlayerState->PlayerNamePrivate
 
-      std::wstring wstr(name);
-      std::string str(wstr.begin(), wstr.end());
-	
-      *player_name = str.c_str();
+	wchar_t* c1; unsigned __int32 c2;//FString
+	c1 = read<wchar_t**>(b1);
+	c2 = read<unsigned __int32*>(b1 + 0x1337);
+
+	*string = c1;
 }
